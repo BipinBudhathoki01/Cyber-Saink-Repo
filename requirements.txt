@@ -1,0 +1,7 @@
+requests
+reportlab
+python-dotenv
+openai
+google-generativeai
+anthropic
+python-owasp-zap-v2.4

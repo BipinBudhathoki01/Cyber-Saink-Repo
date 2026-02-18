@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.env
+.venv
+env/
+venv/
+*.pdf
+findings.json
+nuclei
+nuclei.exe
+zap.log
+*.zip
+*.tar.gz
+ZAP_*
