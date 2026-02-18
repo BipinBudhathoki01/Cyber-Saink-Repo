@@ -37,15 +37,27 @@ def prompt_for_inputs():
         api_key = getpass.getpass(f"Enter {provider.upper()} API Key: ").strip()
         os.environ[env_var_name] = api_key
 
-    return target
+    # Select Scan Mode
+    print("\nSelect Scan Mode:")
+    print("1. Standard Audit (Safe, Passive)")
+    print("2. Full Pentest (Active, Aggressive) [⚠️ Authorized Only]")
+    scan_choice = input("Choice [1-2]: ").strip()
+    is_pentest = scan_choice == "2"
+    
+    if is_pentest:
+        print("\n[!] FULL PENTEST MODE ENABLED. This may trigger IDS/WAF.")
+        # settings.safe_mode = False # Handled in main() now
+    
+    return target, is_pentest
 
 def main():
-    target = prompt_for_inputs()
+    target, is_pentest = prompt_for_inputs()
     settings = Settings(target_url=target)
-    
+    settings.safe_mode = not is_pentest # Sync safe mode
+
     print(f"\n[+] Starting Audit for: {settings.target_url}")
     print(f"[+] LLM Provider: {settings.llm_provider}")
-    print(f"[+] Safe Mode: {settings.safe_mode}")
+    print(f"[+] Mode: {'Red Team / Pentest' if is_pentest else 'Standard Audit'}")
 
     findings = []
     
@@ -65,8 +77,24 @@ def main():
     except:
         pass
 
+    # --- LEVEL 3: ACTIVE PENTEST MODULES ---
+    if is_pentest:
+        print("\n[+] Running Active Admin Enumeration...")
+        from scanners.admin_enum import scan_admin_paths
+        findings += scan_admin_paths(settings.target_url)
+        
+        print("\n[+] Running Active Exploitation Probes (SQLi, XSS)...")
+        from scanners.active_scanner import scan_sql_injection, scan_xss
+        findings += scan_sql_injection(settings.target_url)
+        findings += scan_xss(settings.target_url)
+        
+        print("\n[+] Analyzing JWT Configuration...")
+        from scanners.jwt_analyzer import scan_jwt
+        findings += scan_jwt(settings.target_url)  # Basic check for now
+    # ---------------------------------------
+
     # 3. ZAP Scan
-    print("\n[+] Running ZAP Scan (Passive)...")
+    print(f"\n[+] Running ZAP Scan ({'Active Attack' if is_pentest else 'Passive'})...")
     zap = ZapScanner(settings.zap_base_url, settings.zap_api_key)
     
     if not zap.is_available():
@@ -95,7 +123,8 @@ def main():
             print(f"    Error launching ZAP: {e}")
 
     if zap.is_available():
-        findings += zap.scan(settings.target_url, active=not settings.safe_mode)
+        # Pass is_pentest as 'active' argument
+        findings += zap.scan(settings.target_url, active=is_pentest)
     else:
         print("[-] ZAP still not reachable. Skipping scan.")
 
@@ -115,21 +144,27 @@ def main():
             print(f"    Error installing Nuclei: {e}")
 
     if nuclei.is_available():
-        findings += nuclei.scan(settings.target_url)
+        # If pentest, run full cve/exploitation templates
+        findings += nuclei.scan(settings.target_url) # Nuclei scanner already optimized for power
     else:
         print("[-] Nuclei still not found. Skipping.")
-
+        
     print(f"\n[+] Total Findings: {len(findings)}")
 
     # 5. LLM Analysis
     print("\n[+] Generating Report with LLM...")
     try:
         llm = get_llm(settings)
+        instruction_text = (
+            "You are an expert Red Team Security Auditor." if is_pentest else
+            "You are an expert Cyber Security Auditor acting as an agent."
+        )
+        
         prompt = {
             "target": settings.target_url,
             "findings": findings,
             "instructions": (
-                "You are an expert Cyber Security Auditor acting as an agent."
+                f"{instruction_text}\n"
                 "Review the provided security findings and categorize them into the following buckets:\n"
                 "- Web & API (Auth, Injection, XSS, Headers)\n"
                 "- Network & Infrastructure (Ports, TLS, DNS)\n"
