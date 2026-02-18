@@ -1,77 +1,88 @@
-# Cyber Saink Repo - DAST Report & Automated Vulnerability Assessment
+# Cyber Saink - Automated Red Team & DAST Scanner 🛡️
 
-**Automated Vulnerability Assessment | Web Security Hardening Assessment | Surface-Level Security Scan Report**
+**The Ultimate Automated Vulnerability Assessment & Penetration Testing Tool**
 
-A powerful, all-in-one defensive security scanning agent that orchestrates industry-standard tools (OWASP ZAP, Nuclei, Nmap) and uses advanced LLMs (Gemini, OpenAI, Claude) to generate professional, executive-level PDF reports.
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
+![Security](https://img.shields.io/badge/Security-Red%20Team-red)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-## 🚀 Features
+**Cyber Saink** is an advanced, AI-powered security auditor that bridges the gap between passive scanning and active penetration testing. It orchestrates industry-standard tools (**OWASP ZAP**, **Nuclei**, **Nmap**) and uses **LLMs (Gemini, OpenAI, Claude)** to valid findings and generate professional **"Red Team" quality reports**.
 
--   **Automated DAST**: Integrates **OWASP ZAP** for spidering and passive/active scanning.
--   **Advanced Vulnerability Scanning**: Uses **Nuclei** with thousands of templates for CVEs and misconfigurations.
--   **Surface-Level Hardening**: Checks for missing security headers and sensitive information exposure.
--   **AI-Powered Analysis**: Uses **Google Gemini**, **OpenAI GPT-4**, or **Anthropic Claude** to analyze findings and provide remediation advice.
--   **Professional Reporting**: Generates a detailed PDF report titled **"DAST Report: Automated Vulnerability Assessment"**.
+---
 
-## 🛠️ System Architecture
+## 🚀 Key Features
 
-1.  **Scanners**:
-    -   **Network**: Port scanning.
-    -   **Headers**: Security header analysis.
-    -   **Secrets**: Regex-based secret detection.
-    -   **ZAP**: Web application scanning.
-    -   **Nuclei**: Template-based vulnerability scanning (Auto-installs!).
+### ⚔️ Full Pentest Mode (Active Exploitation)
+Unlike simple scanners, Cyber Saink includes a **"Red Team Mode"** that actively probes for:
+-   **SQL Injection (SQLi)**: Fuzzes parameters with error-based payloads.
+-   **Cross-Site Scripting (XSS)**: Tests for reflected script injection.
+-   **Admin Panel Enumeration**: Brute-forces sensitive administrative paths (`/admin`, `.env`, `/.git`).
+-   **JWT Security Analysis**: Decodes and audits JSON With Tokens for weak signatures (`alg: none`) and expiration.
 
-2.  **Intelligence Layer**:
-    -   Aggregates findings from all tools.
-    -   Sends data to the selected LLM for risk assessment and summarization.
+### 🔍 DAST & Vulnerability Scanning
+-   **OWASP ZAP Integration**: Automated spidering and active scanning (Attack Mode).
+-   **Nuclei Powered**: Runs thousands of community-curated templates for CVEs, misconfigurations, and exposures.
+-   **Network Recon**: Fast port scanning and service detection.
+-   **Secret Detection**: Real-time regex matching for API keys and tokens in HTTP responses.
 
-3.  **Reporting**:
-    -   Produces a polished PDF report.
+### 🧠 AI-Powered Reporting
+-   **Intelligence Layer**: Aggregates findings from all scanners.
+-   **LLM Analysis**: Uses **GPT-4** or **Gemini 1.5** to categorize risks, explain impact, and provide remediation code.
+-   **Executive PDF Report**: Generates a polished `DAST_Report_Automated_Vulnerability_Assessment.pdf` ready for stakeholders.
 
-## 📋 Prerequisites
+---
 
--   **Python 3.10+**
--   **OWASP ZAP**: The agent can auto-download it, or you can run your own instance.
--   **API Keys**: Required for the LLM provider (Gemini, OpenAI, etc.).
+## 🛠️ Installation
 
-## 📦 Installation
+```bash
+# 1. Clone the repository
+git clone https://github.com/BipinBudhathoki01/Cyber-Saink-Repo.git
+cd Cyber-Saink-Repo
 
-1.  **Clone the Repository**:
-    ```bash
-    git clone https://github.com/yourusername/Cyber-Saink-Repo.git
-    cd Cyber-Saink-Repo
-    ```
+# 2. Install dependencies
+pip install -r requirements.txt
 
-2.  **Install Dependencies**:
-    ```bash
-    pip install -r requirements.txt
-    ```
+# 3. Configure API Keys
+# Rename sample.env to .env and add your LLM Keys (OpenAI/Gemini)
+cp sample.env .env
+```
 
-3.  **Configuration**:
-    Copy `sample.env` to `.env` and configure your keys:
-    ```bash
-    cp sample.env .env
-    # Edit .env with your API keys
-    ```
+## ⚡ Usage
 
-## 🚀 Usage
+Run the agent and follow the interactive prompts:
 
-Run the main application:
 ```bash
 python app.py
 ```
 
-Follow the interactive prompts to:
-1.  Enter the **Target URL**.
-2.  Select your **LLM Provider** (if not configured in `.env`).
-3.  Sit back while **Cyber Saink** performs a comprehensive audit.
+### Choose Your Mode:
+1.  **Standard Audit**: Safe, passive scan. Good for initial recon.
+2.  **Full Pentest Mode**: **[⚠️ WARNING]** Active exploitation. Triggers WAFs. Only use on authorized targets.
 
-## 📄 Output
+---
 
--   **Console Logs**: Real-time progress of all scans.
--   **`DAST_Report_Automated_Vulnerability_Assessment.pdf`**: The final professional report.
--   **`findings.json`**: Raw data for further analysis.
+## 📊 Sample Output
 
-## ⚠️ Disclaimer
+```text
+[+] Starting Audit for: https://example.com
+[+] Mode: Red Team / Pentest
 
-This tool is for **authorized security auditing only**. Do not use it on targets you do not own or have explicit permission to test. The authors are not responsible for any misuse.
+[+] Running Active Exploitation Probes...
+    [!] Possible SQLi Found: id (Critical)
+    [!] Possible XSS Found: search (High)
+
+[+] Running Nuclei Scan...
+    [+] Templates updated.
+    [+] Vulnerabilities found: 12
+
+[+] Generating Report with LLM...
+[+] Report Saved: DAST_Report_Automated_Vulnerability_Assessment.pdf
+```
+
+## ⚠️ Legal Disclaimer
+
+**Cyber Saink** is designed for **security professionals, bug bounty hunters, and authorized auditors**. The authors are not responsible for any illegal use of this tool. **Do not scan targets without explicit written permission.**
+
+---
+
+**Keywords**: *DAST, Pentest, Red Team, Vulnerability Scanner, Cyber Security, Bug Bounty, OWASP ZAP, Nuclei, Python, Automation, SQL Injection, XSS, LLM Security*
